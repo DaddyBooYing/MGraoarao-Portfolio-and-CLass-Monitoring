@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mr. Madgenino Gleanson S Arao-arao, LPT, MPA. | Instructor Portfolio & Class Monitoring</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            900: '#312e81',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.4); border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(156, 163, 175, 0.7); }
+        .view-only-mode input[type="number"]:disabled {
+            background: transparent !important;
+            border-color: transparent !important;
+            cursor: default;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans antialiased min-h-screen flex flex-col transition-colors duration-200">
+
+    <!-- Top Navigation Header -->
+    <header class="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="switchMainTab('portfolio')">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-400 flex items-center justify-center text-white font-bold text-lg shadow-md shadow-indigo-500/20">
+                        MA
+                    </div>
+                    <div>
+                        <span class="font-bold text-slate-900 dark:text-white text-base sm:text-lg tracking-tight block leading-none">Mr. Madgenino Gleanson S Arao-arao, LPT, MPA.</span>
+                        <span class="text-xs text-slate-500 dark:text-slate-400 font-medium">Faculty Portfolio & Class Monitoring System</span>
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation Tabs -->
+                <nav class="hidden md:flex items-center space-x-1 bg-slate-100 dark:bg-slate-800/60 p-1.5 rounded-xl border border-slate-200/60 dark:border-slate-700/50">
+                    <button id="nav-portfolio" onclick="switchMainTab('portfolio')" class="flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-sm">
+                        <i data-lucide="user" class="w-4 h-4"></i>
+                        <span>Instructor Portfolio</span>
+                    </button>
+                    <button id="nav-monitoring" onclick="switchMainTab('monitoring')" class="flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all duration-200">
+                        <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                        <span>Class Monitoring Hub</span>
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-700 dark:bg-indigo-900/60 dark:text-indigo-300">Live</span>
+                    </button>
+                </nav>
+
+                <!-- Actions Right -->
+                <div class="flex items-center space-x-3">
+                    <button id="auth-status-btn" onclick="openInstructorLoginModal()" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                        <i data-lucide="lock" class="w-3.5 h-3.5 text-slate-500"></i>
+                        <span id="auth-btn-label">Instructor Login</span>
+                    </button>
+
+                    <button id="theme-toggle" onclick="toggleDarkMode()" title="Toggle Dark/Light Mode" class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                        <i data-lucide="moon" id="theme-icon-moon" class="w-4 h-4 hidden dark:block"></i>
+                        <i data-lucide="sun" id="theme-icon-sun" class="w-4 h-4 block dark:hidden"></i>
+                    </button>
+
+                    <button onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300">
+                        <i data-lucide="menu" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Nav Menu -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-slate-200 dark:border-slate-800 px-4 pt-2 pb-4 space-y-2 bg-white dark:bg-slate-900">
+            <button onclick="switchMainTab('portfolio'); toggleMobileMenu()" class="w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
+                <i data-lucide="user" class="w-4 h-4"></i>
+                <span>Instructor Portfolio</span>
+            </button>
+            <button onclick="switchMainTab('monitoring'); toggleMobileMenu()" class="w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
+                <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                <span>Class Monitoring Hub</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- SECTION 1: INSTRUCTOR PORTFOLIO -->
+        <section id="section-portfolio" class="space-y-8 transition-opacity duration-300">
+            <div class="relative bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-3xl p-6 sm:p-10 overflow-hidden shadow-xl">
+                <div class="absolute -top-24 -right-24 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div class="relative z-10 flex flex-col md:flex-row items-center md:items-start gap-8">
+                    <!-- Profile Avatar 2x2 Square -->
+                    <div class="relative group shrink-0">
+                        <div class="w-32 h-32 sm:w-36 sm:h-36 rounded-2xl bg-gradient-to-tr from-indigo-500 to-purple-500 p-1 shadow-2xl overflow-hidden">
+                            <img 
+                                src="https://lh3.googleusercontent.com/d/19gPOgap4xG5H0xKe6IkVFc1fjYZPY0yA" 
+                                onerror="this.onerror=null; this.src='profile.jpg';"
+                                alt="Mr. Madgeñino Gleannson S. Arao-arao, LPT, MPA." 
+                                class="w-full h-full object-cover object-top rounded-xl"
+                                referrerpolicy="no-referrer"
+                            >
+                        </div>
+                        <span class="absolute bottom-2 right-2 w-5 h-5 bg-emerald-500 border-2 border-slate-900 rounded-full" title="Active Faculty"></span>
+                    </div>
+
+                    <div class="flex-1 text-center md:text-left space-y-4">
+                        <div>
+                            <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-semibold tracking-wide border border-indigo-500/30 mb-2">
+                                <i data-lucide="award" class="w-3.5 h-3.5"></i>
+                                <span>Faculty Instructor • Dept. of Hospitality & Risk Mgmt</span>
+                            </div>
+                            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Mr. Madgenino Gleanson S Arao-arao, LPT, MPA.</h1>
+                            <p class="text-slate-300 text-sm sm:text-base max-w-2xl mt-1">
+                                Specializing in Risk Management, Educational Systems, and Applied Tourism Geographies. Real-time class monitoring synced with Google Sheets.
+                            </p>
+                        </div>
+
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-2">
+                            <div class="bg-white/5 backdrop-blur-sm border border-white/10 p-3 rounded-2xl text-center">
+                                <span class="block text-2xl font-black text-indigo-400">12+</span>
+                                <span class="text-xs text-slate-300 font-medium">Years Teaching</span>
+                            </div>
+                            <div class="bg-white/5 backdrop-blur-sm border border-white/10 p-3 rounded-2xl text-center">
+                                <span class="block text-2xl font-black text-emerald-400">4</span>
+                                <span class="text-xs text-slate-300 font-medium">Handled Courses</span>
+                            </div>
+                            <div class="bg-white/5 backdrop-blur-sm border border-white/10 p-3 rounded-2xl text-center">
+                                <span id="portfolio-student-count" class="block text-2xl font-black text-purple-400">40</span>
+                                <span class="text-xs text-slate-300 font-medium">Live Students</span>
+                            </div>
+                            <div class="bg-white/5 backdrop-blur-sm border border-white/10 p-3 rounded-2xl text-center">
+                                <span class="block text-2xl font-black text-amber-400">98.2%</span>
+                                <span class="text-xs text-slate-300 font-medium">Pass Rate</span>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap items-center justify-center md:justify-start gap-3 pt-2">
+                            <button onclick="switchMainTab('monitoring')" class="inline-flex items-center space-x-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-5 py-2.5 rounded-xl transition shadow-lg shadow-indigo-600/30">
+                                <i data-lucide="bar-chart-2" class="w-4 h-4"></i>
+                                <span>Open Monitoring Dashboard</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Courses Grid -->
+            <div id="featured-courses" class="space-y-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Active Courses & Handled Classes</h2>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">Select any course to view its live monitoring dashboard</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="courses-card-grid"></div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: CLASS MONITORING DASHBOARD -->
+        <section id="section-monitoring" class="hidden space-y-8 transition-opacity duration-300">
+            <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-700/80 pb-4">
+                    
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+                        <div class="flex items-center space-x-2">
+                            <div class="p-2 rounded-lg bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400">
+                                <i data-lucide="graduation-cap" class="w-5 h-5"></i>
+                            </div>
+                            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Select Class:</span>
+                        </div>
+                        <select id="class-selector" onchange="onClassChange()" class="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-800 dark:text-slate-100 text-sm font-bold rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer"></select>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button onclick="fetchLiveDataFromGoogleSheets()" title="Fetch Live Data from Google Sheets" class="inline-flex items-center space-x-1.5 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 text-xs font-bold px-3 py-2 rounded-xl transition hover:bg-emerald-100">
+                            <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-emerald-600"></i>
+                            <span>Sync Live Google Sheets</span>
+                        </button>
+
+                        <button onclick="openGoogleSheetLink('dashboard')" title="Open Linked Google Sheet" class="inline-flex items-center space-x-1.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 text-xs font-semibold px-3 py-2 rounded-xl transition">
+                            <i data-lucide="external-link" class="w-3.5 h-3.5 text-emerald-500"></i>
+                            <span>View Sheet</span>
+                        </button>
+
+                        <button onclick="exportClassDataCSV()" class="inline-flex items-center space-x-2 bg-slate-800 dark:bg-slate-700 hover:bg-slate-900 text-white text-xs font-bold px-3 py-2 rounded-xl transition shadow-sm">
+                            <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                            <span>Export CSV</span>
+                        </button>
+
+                        <!-- Instructor Protected Buttons -->
+                        <button onclick="openModal('add-student-modal')" class="instructor-only hidden inline-flex items-center space-x-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl transition shadow-sm">
+                            <i data-lucide="user-plus" class="w-4 h-4"></i>
+                            <span>Add Student</span>
+                        </button>
+
+                        <button onclick="resetClassDataToDefaults()" class="instructor-only hidden inline-flex items-center space-x-2 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 text-xs font-bold px-3 py-2 rounded-xl transition">
+                            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                            <span>Reset</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 pt-2" id="class-kpi-summary"></div>
+            </div>
+
+            <!-- Monitoring Sub-tabs Navigation -->
+            <div class="flex items-center space-x-2 border-b border-slate-200 dark:border-slate-700 overflow-x-auto pb-1">
+                <button id="subtab-attendance" onclick="switchSubTab('attendance')" class="flex items-center space-x-2 px-5 py-3 border-b-2 border-indigo-600 text-indigo-600 dark:text-indigo-400 font-bold text-sm transition">
+                    <i data-lucide="user-check" class="w-4 h-4"></i>
+                    <span>Attendance Tracker</span>
+                    <span id="badge-attendance-rate" class="px-2 py-0.5 rounded-full text-xs bg-indigo-100 text-indigo-700 dark:bg-indigo-900/60 dark:text-indigo-300 font-bold">100%</span>
+                </button>
+
+                <button id="subtab-grades" onclick="switchSubTab('grades')" class="flex items-center space-x-2 px-5 py-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-medium text-sm transition">
+                    <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
+                    <span>Gradebook & Scores</span>
+                </button>
+
+                <button id="subtab-analytics" onclick="switchSubTab('analytics')" class="flex items-center space-x-2 px-5 py-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-medium text-sm transition">
+                    <i data-lucide="line-chart" class="w-4 h-4"></i>
+                    <span>Performance Analytics</span>
+                </button>
+
+                <button id="subtab-atrisk" onclick="switchSubTab('atrisk')" class="flex items-center space-x-2 px-5 py-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-medium text-sm transition">
+                    <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+                    <span>At-Risk & Interventions</span>
+                    <span id="badge-atrisk-count" class="px-2 py-0.5 rounded-full text-xs bg-rose-100 text-rose-700 dark:bg-rose-900/60 dark:text-rose-300 font-bold">0</span>
+                </button>
+            </div>
+
+            <!-- SUB-TAB 1: ATTENDANCE TRACKER -->
+            <div id="subtab-content-attendance" class="space-y-6">
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+                        <div class="relative w-full sm:w-64">
+                            <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                            <input type="text" id="attendance-search" oninput="renderAttendanceTable()" placeholder="Search student name or ID..." class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl pl-9 pr-3 py-2 text-xs font-medium focus:ring-2 focus:ring-indigo-500 outline-none">
+                        </div>
+
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xs text-slate-500 font-medium">Session Date:</span>
+                            <input type="date" id="attendance-date" onchange="renderAttendanceTable()" class="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-3 py-1.5 text-xs font-semibold">
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-2 w-full sm:w-auto justify-end">
+                        <button onclick="markAllAttendance('Present')" class="instructor-only hidden px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold hover:bg-slate-200 transition">
+                            Mark All Present
+                        </button>
+                        <button onclick="saveAttendanceRecord()" class="instructor-only hidden px-4 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition flex items-center space-x-1.5 shadow-sm">
+                            <i data-lucide="save" class="w-3.5 h-3.5"></i>
+                            <span>Save Session</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap items-center justify-between gap-3 text-xs bg-slate-100/70 dark:bg-slate-800/40 p-3 rounded-xl border border-slate-200/60 dark:border-slate-700/60">
+                    <div class="flex items-center space-x-4">
+                        <span class="font-bold text-slate-600 dark:text-slate-300">Status Keys:</span>
+                        <span class="inline-flex items-center space-x-1"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span><span class="font-semibold text-slate-700 dark:text-slate-300">Present (P)</span></span>
+                        <span class="inline-flex items-center space-x-1"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span><span class="font-semibold text-slate-700 dark:text-slate-300">Late (L)</span></span>
+                        <span class="inline-flex items-center space-x-1"><span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span><span class="font-semibold text-slate-700 dark:text-slate-300">Absent (A)</span></span>
+                        <span class="inline-flex items-center space-x-1"><span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span><span class="font-semibold text-slate-700 dark:text-slate-300">Excused (E)</span></span>
+                    </div>
+                    <div id="session-attendance-summary" class="font-semibold text-indigo-600 dark:text-indigo-400"></div>
+                </div>
+
+                <!-- Attendance Table with Scroll Controls -->
+                <div class="relative bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
+                    <!-- Floating Quick Scroll Controls -->
+                    <div class="absolute right-4 bottom-4 z-20 flex flex-col space-y-1.5 opacity-80 hover:opacity-100 transition-opacity">
+                        <button type="button" onclick="scrollTable('attendance-scroll-container', 'top')" title="Scroll to Top" class="p-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-lg transition active:scale-95">
+                            <i data-lucide="chevron-up" class="w-4 h-4"></i>
+                        </button>
+                        <button type="button" onclick="scrollTable('attendance-scroll-container', 'bottom')" title="Scroll to Bottom" class="p-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-lg transition active:scale-95">
+                            <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+
+                    <!-- Scrollable Container -->
+                    <div id="attendance-scroll-container" class="overflow-y-auto overflow-x-auto max-h-[520px] scroll-smooth">
+                        <table class="w-full text-left text-sm">
+                            <thead class="sticky top-0 z-10 bg-slate-100 dark:bg-slate-900 text-xs uppercase font-bold text-slate-600 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700 shadow-sm">
+                                <tr>
+                                    <th class="py-3.5 px-4 bg-slate-100 dark:bg-slate-900">Student ID</th>
+                                    <th class="py-3.5 px-3 bg-slate-100 dark:bg-slate-900">Date</th>
+                                    <th class="py-3.5 px-4 bg-slate-100 dark:bg-slate-900">Course Title</th>
+                                    <th class="py-3.5 px-4 bg-slate-100 dark:bg-slate-900">Instructor Name</th>
+                                    <th class="py-3.5 px-4 bg-slate-100 dark:bg-slate-900">Student Name</th>
+                                    <th class="py-3.5 px-3 text-center bg-slate-100 dark:bg-slate-900">Year & Section</th>
+                                    <th class="py-3.5 px-4 text-center bg-slate-100 dark:bg-slate-900">Status</th>
+                                    <th class="py-3.5 px-3 text-center bg-slate-100 dark:bg-slate-900">Timestamp</th>
+                                </tr>
+                            </thead>
+                            <tbody id="attendance-table-body" class="divide-y divide-slate-100 dark:divide-slate-700/60 font-medium"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUB-TAB 2: GRADEBOOK & SCORES -->
+            <div id="subtab-content-grades" class="hidden space-y-6">
+                <!-- Gradebook Table with Scroll Controls -->
+                <div class="relative bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
+                    <div class="absolute right-4 bottom-4 z-20 flex flex-col space-y-1.5 opacity-80 hover:opacity-100 transition-opacity">
+                        <button type="button" onclick="scrollTable('gradebook-scroll-container', 'top')" title="Scroll to Top" class="p-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-lg transition active:scale-95">
+                            <i data-lucide="chevron-up" class="w-4 h-4"></i>
+                        </button>
+                        <button type="button" onclick="scrollTable('gradebook-scroll-container', 'bottom')" title="Scroll to Bottom" class="p-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-lg transition active:scale-95">
+                            <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+
+                    <div id="gradebook-scroll-container" class="overflow-y-auto overflow-x-auto max-h-[520px] scroll-smooth">
+                        <table class="w-full text-left text-sm">
+                            <thead class="sticky top-0 z-10 bg-slate-100 dark:bg-slate-900 text-xs uppercase font-bold text-slate-600 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700 shadow-sm">
+                                <tr>
+                                    <th class="py-3.5 px-4 bg-slate-100 dark:bg-slate-900">Student ID</th>
+                                    <th class="py-3.5 px-4 bg-slate-100 dark:bg-slate-900">Full Name</th>
+                                    <th class="py-3.5 px-3 text-center bg-slate-100 dark:bg-slate-900">Year & Sec</th>
+                                    <th class="py-3.5 px-3 text-center bg-slate-100 dark:bg-slate-900">Quiz 1</th>
+                                    <th class="py-3.5 px-3 text-center bg-slate-100 dark:bg-slate-900">Quiz 2</th>
+                                    <th class="py-3.5 px-3 text-center bg-slate-100 dark:bg-slate-900">Midterm</th>
+                                    <th class="py-3.5 px-3 text-center bg-slate-100 dark:bg-slate-900">Project</th>
+                                    <th class="py-3.5 px-3 text-center bg-slate-100 dark:bg-slate-900">Final</th>
+                                    <th class="py-3.5 px-4 text-center bg-slate-100 dark:bg-slate-900">Weighted Score</th>
+                                    <th class="py-3.5 px-3 text-center bg-slate-100 dark:bg-slate-900">Grade</th>
+                                    <th class="py-3.5 px-4 text-right bg-slate-100 dark:bg-slate-900">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="gradebook-table-body" class="divide-y divide-slate-100 dark:divide-slate-700/60 font-medium"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUB-TAB 3: PERFORMANCE ANALYTICS -->
+            <div id="subtab-content-analytics" class="hidden space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
+                        <h4 class="font-bold text-slate-900 dark:text-white text-base">Grade Distribution Breakdown</h4>
+                        <div class="relative h-64 flex items-center justify-center">
+                            <canvas id="chart-grade-distribution"></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
+                        <h4 class="font-bold text-slate-900 dark:text-white text-base">Class Performance per Assessment</h4>
+                        <div class="relative h-64 flex items-center justify-center">
+                            <canvas id="chart-assessment-comparison"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUB-TAB 4: AT-RISK & INTERVENTIONS -->
+            <div id="subtab-content-atrisk" class="hidden space-y-6">
+                <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-rose-50/50 dark:bg-slate-900/50 text-xs uppercase font-bold text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-700">
+                                <tr>
+                                    <th class="py-3.5 px-4">Student ID</th>
+                                    <th class="py-3.5 px-4">Full Name</th>
+                                    <th class="py-3.5 px-3 text-center">Year & Sec</th>
+                                    <th class="py-3.5 px-4 text-center">Attendance %</th>
+                                    <th class="py-3.5 px-4 text-center">Weighted Score</th>
+                                    <th class="py-3.5 px-4">Risk Reason</th>
+                                </tr>
+                            </thead>
+                            <tbody id="atrisk-table-body" class="divide-y divide-slate-100 dark:divide-slate-700/60 font-medium"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- INSTRUCTOR LOGIN PIN MODAL -->
+    <div id="instructor-login-modal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-3xl max-w-sm w-full p-6 border border-slate-200 dark:border-slate-700 shadow-2xl space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-3">
+                <h3 class="font-bold text-base text-slate-900 dark:text-white flex items-center space-x-2">
+                    <i data-lucide="shield-check" class="w-5 h-5 text-indigo-600"></i>
+                    <span>Instructor Unlock</span>
+                </h3>
+                <button onclick="closeModal('instructor-login-modal')" class="p-1 rounded-lg text-slate-400 hover:text-slate-600">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <form onsubmit="handleInstructorPinSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Enter Admin PIN:</label>
+                    <input type="password" id="instructor-pin-input" placeholder="Enter PIN" required class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-3.5 py-2.5 text-sm font-semibold outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div class="flex justify-end space-x-2">
+                    <button type="button" onclick="closeModal('instructor-login-modal')" class="px-4 py-2 rounded-xl text-xs">Cancel</button>
+                    <button type="submit" class="px-5 py-2 rounded-xl bg-indigo-600 text-white font-bold text-xs shadow-md">Unlock Access</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Student Detail Modal -->
+    <div id="student-card-modal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-3xl max-w-lg w-full p-6 border border-slate-200 dark:border-slate-700 shadow-2xl space-y-4">
+            <div id="student-report-card-body" class="space-y-4"></div>
+            <div class="flex justify-end pt-2">
+                <button onclick="closeModal('student-card-modal')" class="px-4 py-2 rounded-xl text-xs bg-slate-200 dark:bg-slate-700 font-bold">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADD / EDIT STUDENT MODAL -->
+    <div id="add-student-modal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white dark:bg-slate-800 rounded-3xl max-w-xl w-full p-6 border border-slate-200 dark:border-slate-700 shadow-2xl space-y-4 my-8">
+            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-3">
+                <h3 class="font-bold text-base text-slate-900 dark:text-white flex items-center space-x-2">
+                    <i data-lucide="user-plus" class="w-5 h-5 text-indigo-600"></i>
+                    <span id="student-modal-title">Add New Student</span>
+                </h3>
+                <button onclick="closeModal('add-student-modal')" class="p-1 rounded-lg text-slate-400 hover:text-slate-600">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <form onsubmit="handleSaveStudent(event)" class="space-y-4">
+                <input type="hidden" id="student-edit-id" value="">
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Student ID Code</label>
+                        <input type="text" id="student-id-input" required placeholder="PCIC 2026-0020" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-3.5 py-2 text-xs font-semibold focus:ring-2 focus:ring-indigo-500 outline-none">
+                        <span class="text-[10px] text-slate-400 mt-1 block">Format: PCIC YYYY-XXXX</span>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Email Address</label>
+                        <input type="email" id="student-email-input" required placeholder="student@pcic.edu.ph" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-3.5 py-2 text-xs font-semibold focus:ring-2 focus:ring-indigo-500 outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">First Name</label>
+                        <input type="text" id="student-fname-input" required placeholder="John" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-3.5 py-2 text-xs font-semibold outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Middle Name</label>
+                        <input type="text" id="student-mname-input" placeholder="D." class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-3.5 py-2 text-xs font-semibold outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Surname</label>
+                        <input type="text" id="student-sname-input" required placeholder="Doe" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-3.5 py-2 text-xs font-semibold outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Year Level</label>
+                        <select id="student-year-input" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-3.5 py-2 text-xs font-semibold outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="1st Year">1st Year</option>
+                            <option value="2nd Year">2nd Year</option>
+                            <option value="3rd Year">3rd Year</option>
+                            <option value="4th Year">4th Year</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Section / Block</label>
+                        <input type="text" id="student-section-input" required placeholder="Block B" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-3.5 py-2 text-xs font-semibold outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Gender</label>
+                        <select id="student-gender-input" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-3.5 py-2 text-xs font-semibold outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="Female">Female</option>
+                            <option value="Male">Male</option>
+                            <option value="Non-Binary">Non-Binary</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-100 dark:border-slate-700 pt-3">
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">Initial Assessment Scores (0 - 100)</label>
+                    <div class="grid grid-cols-5 gap-2">
+                        <div>
+                            <span class="text-[10px] text-slate-400 block mb-1">Quiz 1</span>
+                            <input type="number" id="student-q1-input" min="0" max="100" value="85" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl p-2 text-xs font-semibold text-center">
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-slate-400 block mb-1">Quiz 2</span>
+                            <input type="number" id="student-q2-input" min="0" max="100" value="88" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl p-2 text-xs font-semibold text-center">
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-slate-400 block mb-1">Midterm</span>
+                            <input type="number" id="student-midterm-input" min="0" max="100" value="86" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl p-2 text-xs font-semibold text-center">
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-slate-400 block mb-1">Project</span>
+                            <input type="number" id="student-project-input" min="0" max="100" value="90" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl p-2 text-xs font-semibold text-center">
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-slate-400 block mb-1">Final</span>
+                            <input type="number" id="student-final-input" min="0" max="100" value="89" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl p-2 text-xs font-semibold text-center">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end space-x-2 pt-2">
+                    <button type="button" onclick="closeModal('add-student-modal')" class="px-4 py-2 rounded-xl text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-700">Cancel</button>
+                    <button type="submit" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md">Save Student Record</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 space-y-2 pointer-events-none"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>

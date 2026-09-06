@@ -1,0 +1,12 @@
+# Operating System Files
+.DS_Store
+Thumbs.db
+
+# Cloudflare Wrangler Build Outputs
+.wrangler/
+.cloudflare/
+
+# Node & Package Managers
+node_modules/
+package-lock.json
+yarn.lock
